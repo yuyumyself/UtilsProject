@@ -1,0 +1,1 @@
+HttpClientUtil.java 实现了get，post简易封装，基于spring的RestTemplate实现的。

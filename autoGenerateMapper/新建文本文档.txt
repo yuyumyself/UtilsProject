@@ -1,0 +1,10 @@
+管方文档：http://mybatis.org/generator/configreference/xmlconfig.html
+中文文档参考： https://blog.csdn.net/poisions/article/details/51119386
+参考：
+
+	https://blog.csdn.net/crazyman2010/article/details/88415309
+	https://blog.csdn.net/yu757371316/article/details/80766379
+
+	Mybatis Generator 扩展
+	    https://www.cnblogs.com/byxxw/p/6841020.html
+        https://www.cnblogs.com/kstrive/p/5911873.html
