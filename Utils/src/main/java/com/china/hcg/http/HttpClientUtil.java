@@ -58,19 +58,21 @@ public class HttpClientUtil {
      * @author hecaigui
      * @date 2020/6/13
      * @param  url
-     * @param requestMap  MultiValueMap<String, String> requestMap = new LinkedMultiValueMap<>();
+     * @param postObj  例：JSONObject postObj = new JSONObject();
+     *                 postObj.put("tokenid","11");
+     *                 ArrayList toread = new ArrayList<>(); toread.add("toread");postObj.put("stateList",toread);
      * @return
      */
-    public static String post(String url, MultiValueMap<String, String> requestMap){
+    public static String post(String url, JSONObject postObj){
         RestTemplate restTemplate = HttpClientUtil.rtSimpleFactory();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        HttpEntity request = new HttpEntity<>(requestMap, headers);
+        HttpEntity request = new HttpEntity<>(postObj, headers);
         ResponseEntity<String> entity = restTemplate.postForEntity(url,request, String.class);
         HttpStatus statusCode = entity.getStatusCode();
-        System.out.println("post请求状态："+statusCode.value());
+        //System.out.println("post请求状态："+statusCode.value());
         String body = entity.getBody();
-        System.out.println("post请求结果："+body);
+        //System.out.println("post请求结果："+body);
         return body;
     }
     public static String postOfFormUrlencode(String url, MultiValueMap<String, String> requestMap){
