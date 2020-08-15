@@ -1,4 +1,4 @@
-package com.china.hcg.http;
+package com.china.hcg.http.utils;
 
 import java.net.URL;
 

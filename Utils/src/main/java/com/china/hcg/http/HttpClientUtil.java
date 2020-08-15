@@ -6,7 +6,10 @@ package com.china.hcg.http;
 //import org.springframework.web.client.RestTemplate;
 
 import com.alibaba.fastjson.JSONObject;
-import javafx.concurrent.Task;
+import com.china.hcg.http.utils.HttpUtil;
+import com.china.hcg.http.utils.HttpsClientRequestFactory;
+import com.china.hcg.http.utils.RestTemplateByteArrayResource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -14,25 +17,20 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
 
 /**
  * @autor hecaigui
  * @date 2020-1-19
- * @description HttpClientUtil.java基于spring的RestTemplate实现的。
+ * @description HttpClientUtil.java 实现了get，post简易封装，便于快速发起请求。
+ * <p>
+ *     HttpClientUtil.java基于spring的RestTemplate实现的。
+ * </p>
  */
 public class HttpClientUtil {
-    public static  RestTemplate rtSimpleFactory(){
+    private static  RestTemplate rtSimpleFactory(){
         RestTemplate restTemplate = new RestTemplate();
         // 修正返回乱码https://blog.csdn.net/myhAini/article/details/103276726
         List<HttpMessageConverter<?>> httpMessageConverters = restTemplate.getMessageConverters();
@@ -44,6 +42,28 @@ public class HttpClientUtil {
         });
         return restTemplate;
     }
+    private static  RestTemplate rtHttpsSimpleFactory(){
+        HttpsClientRequestFactory httpRequestFactory = new  HttpsClientRequestFactory();
+        httpRequestFactory.setConnectTimeout(2 * 60 * 1000);
+        httpRequestFactory.setReadTimeout(10 * 60 * 1000);
+
+        RestTemplate restTemplate = new RestTemplate(httpRequestFactory);
+        List<HttpMessageConverter<?>> httpMessageConverters = restTemplate.getMessageConverters();
+        httpMessageConverters.stream().forEach(httpMessageConverter -> {
+            if(httpMessageConverter instanceof StringHttpMessageConverter){
+                StringHttpMessageConverter messageConverter = (StringHttpMessageConverter) httpMessageConverter;
+                messageConverter.setDefaultCharset(Charset.forName("UTF-8"));
+            }
+        });
+        return restTemplate;
+    }
+    /**
+     * @description 发起get请求
+     * @author hecaigui
+     * @date 2020-8-15
+     * @param   url
+     * @return
+     */
     public static String get(String url){
         RestTemplate restTemplate = HttpClientUtil.rtSimpleFactory();
         ResponseEntity<String> entity = restTemplate.getForEntity(url, String.class);
@@ -54,11 +74,50 @@ public class HttpClientUtil {
         return body;
     }
     /**
-     * @description
+     * @description 发起https类型的get请求
+     * @author hecaigui
+     * @date 2020-8-15
+     * @param   url
+     * @return
+     */
+    public static String getForHttps(String url){
+        RestTemplate restTemplate = HttpClientUtil.rtHttpsSimpleFactory();
+        ResponseEntity<String> entity = restTemplate.getForEntity(url, String.class);
+        HttpStatus statusCode = entity.getStatusCode();
+        System.out.println("get请求状态："+statusCode.value());
+        String body = entity.getBody();
+        System.out.println("get请求结果："+body);
+        return body;
+    }
+    /**
+     * @description 发起get请求，该请求中携带了USER_AGENT请求头，来伪装成浏览器
+     * @author hecaigui
+     * @date 2020-8-15
+     * @param   url
+     * @return
+     */
+    public static String getForHttpsAndCookie(String url){
+        RestTemplate restTemplate = HttpClientUtil.rtHttpsSimpleFactory();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.USER_AGENT,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:9.0) Gecko/20100101 Firefox/9.0");
+        HttpEntity<String> httpEntity = new HttpEntity<>(null, headers);
+
+        ResponseEntity<String> entity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+        HttpStatus statusCode = entity.getStatusCode();
+        System.out.println("get请求状态："+statusCode.value());
+        String body = entity.getBody();
+        System.out.println("get请求结果："+body);
+        return body;
+    }
+    /**
+     * @description 发起post请求
      * @author hecaigui
      * @date 2020/6/13
      * @param  url
-     * @param postObj  例：JSONObject postObj = new JSONObject();
+     * @param postObj  请求参数
+     *                 例：JSONObject postObj = new JSONObject();
      *                 postObj.put("tokenid","11");
      *                 ArrayList toread = new ArrayList<>(); toread.add("toread");postObj.put("stateList",toread);
      * @return
@@ -75,6 +134,18 @@ public class HttpClientUtil {
         //System.out.println("post请求结果："+body);
         return body;
     }
+    /**
+     * @description 发起post请求，数据传输格式为x-www-form-urlencoded，且带有重定向功能
+     * <p>
+     *     https://blog.csdn.net/u013827143/article/details/86222486
+     *     https://www.jianshu.com/p/53b5bd0f1d44
+     * </p>
+     * @author hecaigui
+     * @date 2020/6/13
+     * @param  url
+     * @param requestMap 请求参数  MultiValueMap<String, String> requestMap = new LinkedMultiValueMap<>();
+     * @return
+     */
     public static String postOfFormUrlencode(String url, MultiValueMap<String, String> requestMap){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -84,6 +155,7 @@ public class HttpClientUtil {
         HttpStatus statusCode = entity.getStatusCode();
         System.out.println("post请求状态："+statusCode.value());
         String body = entity.getBody();
+        // 网页重定向自动跳转
         if (statusCode.is3xxRedirection()){
             String url2 = HttpUtil.getPrefix(url)+entity.getHeaders().getLocation();
             body = HttpClientUtil.get(url2);
@@ -92,11 +164,48 @@ public class HttpClientUtil {
 
         return body;
     }
+    /**
+     * @description restTemplate以post形式传输文件 。
+     * <p>
+     *     文件接收案例:./attachs/
+     * </p>
+     * @author hecaigui
+     * @date 2020-8-15
+     * @param  postUrl 必须参数 POST请求地址
+     * @param bytes 文件字节
+     * @param fileName 文件名，可以为空但要传
+     * @param otherHeadParams 其他参数
+     * @return
+     */
+    public static String postOfFile(String postUrl, byte[] bytes, String fileName, Map<String,Object> otherHeadParams){
+        RestTemplate restTemplate =  new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        MediaType type = MediaType.parseMediaType("multipart/form-data");
+        headers.setContentType(type);
+
+        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        ByteArrayResource arrayResource = new RestTemplateByteArrayResource(bytes,fileName);
+        form.add("multipartFile", arrayResource);
+        for (String key : otherHeadParams.keySet()){
+            form.add(key,otherHeadParams.get(key));
+        }
+
+        HttpEntity request = new HttpEntity<>(form, headers);
+        ResponseEntity<String> entity = restTemplate.postForEntity(postUrl,request, String.class);
+        HttpStatus statusCode = entity.getStatusCode();
+        System.out.println("post请求状态："+statusCode.value());
+        String body = entity.getBody();
+        System.out.println("post请求结果："+body);
+        return body;
+    }
     public static void main(String[] args){
-        HttpClientUtil.get("https://www.baidu.com/");
+        //HttpClientUtil.get("https://www.amazon.com/");
+        //HttpClientUtil.getForHttps("https://www.amazon.com/robots.txt");
+        HttpClientUtil.getForHttpsAndCookie("https://www.amazon.com/");
+        //HttpClientUtil.getForHttps("https://tcc.taobao.com/cc/json/mobile_tel_segment.htm?tel=15180411152");
     }
 }
-
+// 以下为一些resttemplate原生demo
 //exchange:
 //        String resultJsonStr = "";
 //        HttpHeaders requestHeaders = new HttpHeaders();
@@ -105,6 +214,13 @@ public class HttpClientUtil {
 //
 //        ResponseEntity<String> responseEntity=restTemplate.exchange(url, HttpMethod.GET,requestEntity, String.class);
 //        resultJsonStr=responseEntity.getBody();
+//get:
+//        RestTemplate restTemplate = new RestTemplate();
+//        ResponseEntity<String> entity = restTemplate.getForEntity("http://www.baidu.com/s?ie=UTF-8&wd=1", String.class);
+//        HttpStatus statusCode = entity.getStatusCode();
+//        System.out.println("statusCode.is2xxSuccessful()"+statusCode.is2xxSuccessful());
+//        String body = entity.getBody();
+//        System.out.println("entity.getBody()"+body);
 //post：
 //		private JSONObject  postForObj (String postUrl , JSONObject postObj){
 //			RestTemplate restTemplate = new RestTemplate();

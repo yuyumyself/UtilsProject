@@ -13,3 +13,6 @@ spring:
 #          password:                                              # git仓库的密码
   profiles:
     active: native #从本地加载配置文件，默认从应用的src/main/resource目录下检索配置文件。
+logging:
+  level:
+    root: debug
