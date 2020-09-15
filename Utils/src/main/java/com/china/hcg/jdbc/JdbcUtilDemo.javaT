@@ -126,15 +126,15 @@ public class JdbcUtilDemo {
 //        }
 //
 //        final String Table = "EGOV_NOTICE";
-//        String driver = "com.mysql.jdbc.Driver";
-//        String url = env.getProperty("spring.datasource.url");
-//        String user = env.getProperty("spring.datasource.username");
-//        String password = env.getProperty("spring.datasource.password");
+//        final String driver = "com.mysql.jdbc.Driver";
+//        final String url = env.getProperty("spring.datasource.url");
+//        final String user = env.getProperty("spring.datasource.username");
+//        final String password = env.getProperty("spring.datasource.password");
 //
 //
 //        final JdbcUtil allNoticeQuery = new JdbcUtil(driver,url,user,password) {
 //            @Override
-//            void queryOverride(ResultSet lastRowRS) throws SQLException{
+//            public void queryOverride(ResultSet lastRowRS) throws SQLException{
 //                // todo:获取当前行的REC_UNIT字段数据。REC_UNIT数据为：['D0001','D0002']
 //                String REC_UNIT = lastRowRS.getString("REC_UNIT");
 //                // todo:获取当前行的CREATE_UESR_NO字段数据.CREATE_UESR_NO 数据为：U000001
@@ -155,6 +155,7 @@ public class JdbcUtilDemo {
 //                        UserComparison newUsr = newUsersMaps.get(unitNo);
 //                        if (newUsers == null){
 //                            isUpdate = false;
+//                            break;
 //                        }
 //                        newJsonArray.add(newUsr.getOldNo());
 //                    }
@@ -172,6 +173,7 @@ public class JdbcUtilDemo {
 //                    UserComparison newUsr = newUsersMaps.get(createUserNo);
 //                    if (newUsr == null){
 //                        isUpdate = false;
+//                        break;
 //                    }
 //                    newUserNo = newUsr.getOldNo();
 //
@@ -195,7 +197,7 @@ public class JdbcUtilDemo {
 //
 //        JdbcUtil alterTableQuery = new JdbcUtil(driver,url,user,password) {
 //            @Override
-//            void queryOverride(ResultSet lastRowRS) {
+//            public void queryOverride(ResultSet lastRowRS) {
 //                try {
 //                    lastRowRS.getString("HSF_USER_MOVE");
 //                    System.err.println("HSF用户迁移------表已存在HSF_USER_MOVE字段,开始更新旧数据");
@@ -234,15 +236,15 @@ public class JdbcUtilDemo {
         }
 
         final String Table = "EGOV_DISPATCH";
-        String driver = "com.mysql.jdbc.Driver";
-        String url = env.getProperty("spring.datasource.url");
-        String user = env.getProperty("spring.datasource.username");
-        String password = env.getProperty("spring.datasource.password");
+        final String driver = "com.mysql.jdbc.Driver";
+        final String url = env.getProperty("spring.datasource.url");
+        final String user = env.getProperty("spring.datasource.username");
+        final String password = env.getProperty("spring.datasource.password");
 
 
         final JdbcUtil allNoticeQuery = new JdbcUtil(driver,url,user,password) {
             @Override
-            void queryOverride(ResultSet lastRowRS) throws SQLException{
+            public void queryOverride(ResultSet lastRowRS) throws SQLException{
                 // todo:获取当前行的REC_UNIT字段数据。REC_UNIT数据为：['D0001','D0002']
                 String READERS = lastRowRS.getString("READERS");
                 Map<String,String> noOfListsMap = new HashMap<>();
@@ -274,7 +276,7 @@ public class JdbcUtilDemo {
 
         JdbcUtil alterTableQuery = new JdbcUtil(driver,url,user,password) {
             @Override
-            void queryOverride(ResultSet lastRowRS) {
+            public void queryOverride(ResultSet lastRowRS) {
                 try {
                     lastRowRS.getString("HSF_USER_MOVE");
                     System.err.println("HSF用户迁移------表已存在HSF_USER_MOVE字段,开始更新旧数据");

@@ -20,7 +20,7 @@ import java.sql.*;
  *
  */
 public  class JdbcUtil {
-    String driver = "com.mysql.jdbc.Driver";
+     String driver = "com.mysql.jdbc.Driver";
     String url = "jdbc:mysql://ip:端口/zjgy-hsf?characterEncoding=utf8&useSSL=false";
     String user = "root";
     String password = "root";
@@ -104,7 +104,7 @@ public  class JdbcUtil {
             }
         }
     }
-    void queryOverride(ResultSet lastRowRS) throws SQLException{};
+    public void queryOverride(ResultSet lastRowRS) throws SQLException{};
 
     public  Integer update(String updateSql) {
         Connection conn = null;
@@ -188,7 +188,7 @@ public  class JdbcUtil {
 
         final JdbcUtil allNoticeQuery = new JdbcUtil(driver,url,user,password) {
             @Override
-            void queryOverride(ResultSet lastRowRS) throws SQLException{
+            public void queryOverride(ResultSet lastRowRS) throws SQLException{
                 String recUnit = lastRowRS.getString("REC_UNIT");
                 //JSONArray jsonArray = JSONObject.parseArray(recUnit);
             }
@@ -196,7 +196,7 @@ public  class JdbcUtil {
 
         JdbcUtil alterTableQuery = new JdbcUtil(driver,url,user,password) {
             @Override
-            void queryOverride(ResultSet lastRowRS) {
+            public void queryOverride(ResultSet lastRowRS) {
                 try {
                     lastRowRS.getString("HSF_USER_MOVE");
                     System.err.println("HSF用户迁移------表已存在HSF_USER_MOVE字段,开始更新旧数据");
@@ -209,4 +209,5 @@ public  class JdbcUtil {
         };
         alterTableQuery.query("select * from EGOV_NOTICE limit 1");
     }
+
 }

@@ -199,10 +199,19 @@ public class StringUtils {
 	　　StringBuffer：适用多线程下在字符缓冲区进行大量操作的情况	
 	*/
 
+	/**
+	 * @description 判断字符串是否为数字
+	 * <p>
+	 *     https://www.cnblogs.com/xinruyi/p/11518617.html
+	 * </p>
+	 * @param str
+	 * @return
+	 */
+	public static boolean isInt(String str) {
+		Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+		return pattern.matcher(str).matches();
+	}
     public static void main(String[] args){
-    	String sb = ",bbb,dsaj,j";
-
-		String[]  strs=sb.split(",");//结果："" "bbb" "dsaj" "j"
-		System.out.println(strs);
+		System.out.println(StringUtils.isInt("-122321-112"));
     }
 }

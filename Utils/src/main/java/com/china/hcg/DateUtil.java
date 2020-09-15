@@ -38,7 +38,7 @@ public class DateUtil {
         Date date1 = new Date();//取时间
         Calendar calendar  =   Calendar.getInstance();
         calendar.setTime(date1); //需要将date数据转移到Calender对象中操作
-        calendar.add(calendar.DATE,2);//把日期往后增加n天.正数往后推,负数往前移动
+        calendar.add(Calendar.DATE,2);//把日期往后增加n天.正数往后推,负数往前移动
         date1=calendar.getTime();   //这个时间就是日期往后推一天的结果
 
         /**
