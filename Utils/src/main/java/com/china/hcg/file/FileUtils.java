@@ -4,9 +4,12 @@ import jdk.nashorn.internal.runtime.regexp.JdkRegExp;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import org.apache.commons.codec.binary.Hex;
 
 /**
  * @autor hecaigui
@@ -112,7 +115,42 @@ public class FileUtils {
         }
         return content.toString();
     }
+    /**
+     * @description 文件转byte[]
+     * @param  * @param file
+     * @return
+     */
+    public static byte[] fileToByte(File file) {
+        FileInputStream fis = null;
+        ByteArrayOutputStream baos = null;
+        //byte[] buffer = null;
+        byte[] bytes = null;
+        try {
 
+            fis = new FileInputStream(file);
+            baos = new ByteArrayOutputStream(fis.available());
+            bytes = new byte[fis.available()];
+            int temp;
+            while ((temp = fis.read(bytes)) != -1) {
+                baos.write(bytes, 0, temp);
+            }
+            //buffer = baos.toByteArray();
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        } catch(IOException e){
+            e.printStackTrace();
+        } finally {
+            try {
+                fis.close();
+                baos.close();
+            } catch (IOException exception){
+                System.err.println(exception);
+            }
+        }
+        //System.out.println(buffer.length);
+        System.err.println(bytes.length);
+        return bytes;
+    }
     /**
      * @description 往文本写入内容
      * @param  * @param file
@@ -137,6 +175,35 @@ public class FileUtils {
             }
         }
     }
+    /**
+     * @description 生成sha1，可用来验证文件完整性
+     * <p>
+     *     https://www.cnblogs.com/-beyond/p/10575078.html
+     *     摘要算法简介
+     * 　　摘要算法，也是加密算法的一种，还有另外一种叫法：指纹。
+     *     摘要算法就是对指定的数据进行一系列的计算，然后得出一个串内容，该内容就是该数据的摘要。不同的数据产生的摘要是不同的.
+     *     所以，可以用它来进行一些数据加密的工作：通过对比两个数据加密后的摘要是否相同，来判断这两个数据是否相同。
+     * 　　还可以用来保证数据的完整性，常见的软件在发布之后，会同时发布软件的md5和sha值，这个md5和sha值就是软件的摘要。当用户将软件下载之后，然后去计算软件的摘要，如果计算所得的摘要和软件发布方提供的摘要相同，则证明下载的软件和发布的软件一模一样，否则，就是下载过程中数据（软件）被篡改了。
+     *
+     * 　　常见的摘要算法包括：md、sha这两类。md包括md2、md4、md5；sha包括sha1、sha224、sha256、sha384、sha512。
+     * </p>
+     * @param
+     * @return
+     */
+    public static String fileSha1(byte[] bytes) throws NoSuchAlgorithmException {
+        // 获取指定摘要算法的messageDigest对象
+        MessageDigest messageDigest = MessageDigest.getInstance("SHA"); // 此处的sha代表sha1
+
+        // 调用digest方法，进行加密操作
+        byte[] cipherBytes = messageDigest.digest(bytes);
+
+        // 使用Apache的Hex类实现Hex(16进制字符串和)和字节数组的互转
+        String cipherStr = Hex.encodeHexString(cipherBytes);
+
+        System.out.println(cipherStr);
+        return cipherStr;
+    }
+
 //    /**
 //     * @description 二进制流（来源要为字符）转字符串。
 //     * @param  * @param args
@@ -144,32 +211,28 @@ public class FileUtils {
 //     */
 //    public static String streamToString(InputStream inputStream)
 //    {
-//        //Original byte[]
 //        byte[] bytes = "hello world".getBytes();
-//
-//        //Base64 Encoded
+//        // 字节进行base64编码
 //        String encoded = Base64.getEncoder().encodeToString(bytes);
-//
-//        //Base64 Decoded
+//        System.out.println( encoded );
+//        // base64解码
 //        byte[] decoded = Base64.getDecoder().decode(encoded);
-//
-//        //Verify original content
 //        System.out.println( new String(decoded) );
 //    }
 
     public static void main(String[] args)
     {
-        //Original byte[]
+
+//        String filePath = "C:\\Users\\Administrator\\Desktop\\1.pdf";
+//        File file = new File(filePath);
+
         byte[] bytes = "hello world".getBytes();
-
-        //Base64 Encoded
+        // 字节进行base64编码
         String encoded = Base64.getEncoder().encodeToString(bytes);
-
-        //Base64 Decoded
+        System.out.println( encoded );
+        // base64解码
         byte[] decoded = Base64.getDecoder().decode(encoded);
-
-        //Verify original content
-        //System.out.println( new String(decoded) );
+        System.out.println( new String(decoded) );
     }
 
 //    public static void readFileContent(File file) {
