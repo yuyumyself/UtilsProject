@@ -1,13 +1,10 @@
-package com.china.hcg;
+package com.china.hcg.thread;
 
 
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.china.hcg.http.HttpClientUtil;
-import com.sun.jmx.snmp.tasks.Task;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.Date;
