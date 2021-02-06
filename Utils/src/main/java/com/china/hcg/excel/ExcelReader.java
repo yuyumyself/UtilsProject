@@ -42,7 +42,9 @@ public class ExcelReader {
 	private static final String XLSX = "xlsx";
 
 
-
+	public static void main(String[] args) {
+		List<List<String>> result = ExcelReader.readExcel("C:\\Users\\Administrator\\Desktop\\test.xlsx");
+	}
 	/**
 	 * 读取Excel文件内容
 	 * @param fileName 要读取的Excel文件所在路径
@@ -240,7 +242,5 @@ public class ExcelReader {
 		return columnData;
 	}
 
-	public static void main(String[] args) {
-		List<List<String>> result = ExcelReader.readExcel("C:\\Users\\Administrator\\Desktop\\浙江省高院oa-需求计划时间表0910.xlsx");
-	}
+
 }
