@@ -12,7 +12,7 @@ import java.util.concurrent.*;
  */
 public  class  AsyncHttp {
 	// post请求消息中心接口用的线程池
-	ExecutorService postMessageCenterApiThreadPool = new ThreadPoolExecutor(5, 100, 0L, TimeUnit.MICROSECONDS, new SynchronousQueue<Runnable>(), new ThreadFactory() {
+	static ExecutorService postMessageCenterApiThreadPool = new ThreadPoolExecutor(5, 100, 0L, TimeUnit.MICROSECONDS, new SynchronousQueue<Runnable>(), new ThreadFactory() {
 		@Override
 		public Thread newThread(Runnable r) {
 			Thread t = new Thread(r);
@@ -21,7 +21,7 @@ public  class  AsyncHttp {
 			return  t;
 		}
 	});
-	class postMessageCenterApiRunnable implements Runnable{
+	static class postMessageCenterApiRunnable implements Runnable{
 		String postUrl;
 		JSONObject postObj;
 		postMessageCenterApiRunnable(String postUrl , JSONObject postObj){
@@ -33,7 +33,7 @@ public  class  AsyncHttp {
 			HttpClientUtil.post(postUrl,postObj);
 		}
 	}
-	void post(String postUrl,JSONObject postObj){
+	static void post(String postUrl,JSONObject postObj){
 		postMessageCenterApiThreadPool.submit(new postMessageCenterApiRunnable(postUrl,postObj));
 	}
 }

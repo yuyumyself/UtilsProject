@@ -90,7 +90,9 @@ spring发起http请求：
                 https://blog.csdn.net/xiaoxian8023/article/details/49865335
 
 
-
+		超时设置：
+			https://blog.csdn.net/truelove12358/article/details/88838644?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-3.control&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-3.control
+			http://cn.voidcc.com/question/p-gjlkwpxr-gy.html
 	
 附：
 	1.字符串编码
@@ -116,5 +118,5 @@ spring发起http请求：
 	3.uri与url
 		https://www.cnblogs.com/throwable/p/9740425.html
 		https://blog.csdn.net/qq_32595453/article/details/80563142
-
+	
 ```

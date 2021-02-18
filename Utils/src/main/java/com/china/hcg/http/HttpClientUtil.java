@@ -135,6 +135,32 @@ public class HttpClientUtil {
         return body;
     }
     /**
+     * @description 发起post请求
+     * @author hecaigui
+     * @date 2020/6/13
+     * @param  url
+     * @param postObj  请求参数
+     *                 例：JSONObject postObj = new JSONObject();
+     *                 postObj.put("tokenid","11");
+     *                 ArrayList toread = new ArrayList<>(); toread.add("toread");postObj.put("stateList",toread);
+     * @return
+     */
+    public static JSONObject post2(String url, JSONObject postObj){
+        RestTemplate restTemplate = HttpClientUtil.rtSimpleFactory();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        HttpEntity request = new HttpEntity<>(postObj, headers);
+        ResponseEntity<String> entity = restTemplate.postForEntity(url,request, String.class);
+        HttpStatus statusCode = entity.getStatusCode();
+        //System.out.println("post请求状态："+statusCode.value());
+        String body = entity.getBody();
+        //System.out.println("post请求结果："+body);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("status",statusCode.value());
+        jsonObject.put("body",body);
+        return jsonObject;
+    }
+    /**
      * @description 发起post请求，数据传输格式为x-www-form-urlencoded，且带有重定向功能
      * <p>
      *     https://blog.csdn.net/u013827143/article/details/86222486
