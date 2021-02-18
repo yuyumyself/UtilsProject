@@ -211,7 +211,67 @@ public class StringUtils {
 		Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
 		return pattern.matcher(str).matches();
 	}
-    public static void main(String[] args){
-		System.out.println(StringUtils.isInt("-122321-112"));
-    }
+	/**
+	 * @description 正则替换字符串，所有符合规则的部分为不同的值
+	 * @author hecaigui
+	 * @date 2020-11-13
+	 * @param s 例："helD2lo java，helD8lo php"
+	 * @param reg 例："D[0-9]"
+	 * @return
+	 */
+	static String regReplace(String s,String reg){
+		String words = s;
+		String newStr = "未找到任何结果";
+		Pattern pattern = Pattern.compile(reg);
+		Matcher matcher = pattern.matcher(words);
+		while (matcher.find()){
+			System.out.println(matcher.group());
+			//todo
+			String replaceWith= "要替换为";
+			newStr = matcher.replaceFirst(replaceWith);
+			matcher = pattern.matcher(newStr);
+		}
+		System.out.println(newStr);
+		return newStr;
+	}
+
+//    public static void main(String[] args){
+//	    String userPos = "政治部主任 党组成员\n";
+//	    String[]  strs = userPos.split(";");
+////	    if (org.apache.commons.lang3.StringUtils.isNotBlank(userPos)){
+////		    //党组成员，巡视员，副院长
+////		    //政治部主任,党组成员
+////		    userPos = userPos.replace(" ","");
+////		    userPos = userPos.replace("\n","");
+////		    userPos = userPos.replace(",",";");
+////		    userPos = userPos.replace("，",";");
+////		    if (userPos.contains(";")){
+////			    String[]  strs = userPos.split(";");
+////			    userPos = strs[strs.length - 1];
+////		    }
+////		    try {
+////		    	UserLevel.valueOf(userPos).ordinal();
+////		    }catch (IllegalArgumentException e){
+////			    e.printStackTrace();
+////			    System.out.println(userPos);
+////			    System.out.println("请更新职务常量类");
+////		    }
+////	    }
+//	    String sb = "bbbdsajj,d,s";
+//	    System.err.println(sb.substring(0,sb.length()-1));
+//	    System.err.println(userPos);
+//
+//
+//
+//    }
+
+	public static void main(String[] args) {
+		//修正文件名C:\\Users\\Administrator\\Desktop\\11-6测试情况反馈2
+		//修正文件名C:\Users\Administrator\Desktop\11-6测试情况反馈2
+		String s = "C:\\Users\\Administrator\\Desktop\\11-6测试情况反馈2";
+		if (s.contains("\\")){
+			String s1[] = s.split("\\\\");
+			System.out.println(s1[s1.length-1]);
+		}
+	}
 }

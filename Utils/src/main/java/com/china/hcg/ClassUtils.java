@@ -90,4 +90,45 @@ public class ClassUtils {
         String path = Thread.currentThread().getContextClassLoader().getResource(".").getPath();
         System.out.println(path);
     }
+
+    /*
+		Java对象的复制：
+			https://blog.csdn.net/ztchun/article/details/79110096
+			Apache或spring工具类BeanUtils实现复制：
+				Student stu1 = new Student();
+				stu1.setNumber(12345);
+				Student stu2 = new Student();
+				BeanUtils.copyProperties(stu2,stu1);
+     */
+	/**
+	 * 通过get方法把父类的属性值赋值给子类
+	 *
+	 * @param father 父类
+	 * @param child  子类
+	 * @param <T>
+	 * @throws Exception
+	 */
+	public static <T> void fatherToChild(T father, T child) throws Exception {
+		if (child.getClass().getSuperclass() != father.getClass()) {
+			throw new Exception("child 不是 father 的子类");
+		}
+		Class<?> fatherClass = father.getClass();
+		Field[] declaredFields = fatherClass.getDeclaredFields();
+		for (int i = 0; i < declaredFields.length; i++) {
+			Field field = declaredFields[i];
+			Method method = fatherClass.getDeclaredMethod("get" + upperHeadChar(field.getName()));
+			Object obj = method.invoke(father);
+			field.setAccessible(true);
+			field.set(child, obj);
+		}
+	}
+
+	/**
+	 * 首字母修改为大写，例如：in:deleteDate --> out:DeleteDate
+	 */
+	public static String upperHeadChar(String in) {
+		String head = in.substring(0, 1);
+		String out = head.toUpperCase() + in.substring(1, in.length());
+		return out;
+	}
 }
