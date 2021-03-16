@@ -179,13 +179,15 @@ public class FileUtils {
      * @description 生成sha1，可用来验证文件完整性
      * <p>
      *     https://www.cnblogs.com/-beyond/p/10575078.html
-     *     摘要算法简介
-     * 　　摘要算法，也是加密算法的一种，还有另外一种叫法：指纹。
-     *     摘要算法就是对指定的数据进行一系列的计算，然后得出一个串内容，该内容就是该数据的摘要。不同的数据产生的摘要是不同的.
-     *     所以，可以用它来进行一些数据加密的工作：通过对比两个数据加密后的摘要是否相同，来判断这两个数据是否相同。
-     * 　　还可以用来保证数据的完整性，常见的软件在发布之后，会同时发布软件的md5和sha值，这个md5和sha值就是软件的摘要。当用户将软件下载之后，然后去计算软件的摘要，如果计算所得的摘要和软件发布方提供的摘要相同，则证明下载的软件和发布的软件一模一样，否则，就是下载过程中数据（软件）被篡改了。
+     *     摘要算法简介：
+     * 　　   摘要算法，也是加密算法的一种，还有另外一种叫法：指纹。
+     *        摘要算法就是对指定的数据进行一系列的计算，然后得出一个串内容，该内容就是该数据的摘要。不同的数据产生的摘要是不同的.
+     *     摘要算法作用：
+     *        所以，可以用它来进行一些数据加密的工作：通过对比两个数据加密后的摘要是否相同，来判断这两个数据是否相同。
+     * 　　   还可以用来保证数据的完整性，常见的软件在发布之后，会同时发布软件的md5和sha值，这个md5和sha值就是软件的摘要。当用户将软件下载之后，然后去计算软件的摘要，如果计算所得的摘要和软件发布方提供的摘要相同，则证明下载的软件和发布的软件一模一样，否则，就是下载过程中数据（软件）被篡改了。
      *
-     * 　　常见的摘要算法包括：md、sha这两类。md包括md2、md4、md5；sha包括sha1、sha224、sha256、sha384、sha512。
+     * 　　常见的摘要算法包括：
+     *          md、sha这两类。md包括md2、md4、md5；sha包括sha1、sha224、sha256、sha384、sha512。
      * </p>
      * @param
      * @return
@@ -202,6 +204,22 @@ public class FileUtils {
 
         System.out.println(cipherStr);
         return cipherStr;
+    }
+    /**
+     * @description 通过字节来判断文件是否改变
+     * @author hecaigui
+     * @date 2021-3-5
+     * @param bytes1
+     * @param bytes2
+     * @return true 文件改变 false 文件没改变
+     */
+    public static boolean fileChangeForByte(byte[] bytes1,byte[] bytes2)throws NoSuchAlgorithmException{
+        String byte1ShaString = FileUtils.fileSha1(bytes1);
+        String byte2ShaString = FileUtils.fileSha1(bytes2);
+        if (byte1ShaString.equals(byte2ShaString)){
+            return false;
+        }
+        return true;
     }
 
 //    /**

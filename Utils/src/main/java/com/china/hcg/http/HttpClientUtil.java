@@ -112,7 +112,11 @@ public class HttpClientUtil {
         return body;
     }
     /**
-     * @description 发起post请求
+     * @description 发起json格式的post请求
+     * <p>
+     *     请求头：application/json;charset=UTF-8
+     *     请求体：json字符串
+     * </p>
      * @author hecaigui
      * @date 2020/6/13
      * @param  url
@@ -122,7 +126,7 @@ public class HttpClientUtil {
      *                 ArrayList toread = new ArrayList<>(); toread.add("toread");postObj.put("stateList",toread);
      * @return
      */
-    public static String post(String url, JSONObject postObj){
+    public static String postOfJson(String url, JSONObject postObj){
         RestTemplate restTemplate = HttpClientUtil.rtSimpleFactory();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -135,17 +139,14 @@ public class HttpClientUtil {
         return body;
     }
     /**
-     * @description 发起post请求
+     * @description 同上，仅返回多了请求状态。
      * @author hecaigui
      * @date 2020/6/13
      * @param  url
-     * @param postObj  请求参数
-     *                 例：JSONObject postObj = new JSONObject();
-     *                 postObj.put("tokenid","11");
-     *                 ArrayList toread = new ArrayList<>(); toread.add("toread");postObj.put("stateList",toread);
-     * @return
+     * @param postObj
+     * @return {"status":"请求状态","body":"请求响应内容"}
      */
-    public static JSONObject post2(String url, JSONObject postObj){
+    public static JSONObject postOfJson2(String url, JSONObject postObj){
         RestTemplate restTemplate = HttpClientUtil.rtSimpleFactory();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
