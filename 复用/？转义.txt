@@ -1,0 +1,43 @@
+
+	/**
+	 * solr检索时，转换特殊字符
+	 * https://blog.csdn.net/weixin_40584261/article/details/88756970
+	 * <p>
+	 * 		MongoDB或者Solr引擎在查询数据的时候，如果存在特殊字符（?$.[等），查询不出数据或者查询出来的数据是不准确的，这个时候就需要对特殊字符进行转义。
+	 * 	</p>
+	 * @param s 需要转义的字符串
+	 * @return 返回转义后的字符串
+	 */
+	public static String escapeQueryChars(String s) {
+		if (StringUtils.isBlank(s)) {
+			return s;
+		}
+		StringBuilder sb = new StringBuilder();
+		//查询字符串一般不会太长，挨个遍历也花费不了多少时间
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			// These characters are part of the query syntax and must be escaped
+			if (c == '\\' || c == '+' || c == '-' || c == '!' || c == '(' || c == ')' 
+				|| c == ':' || c == '^'	|| c == '[' || c == ']' || c == '\"' 
+				|| c == '{' || c == '}' || c == '~' || c == '*' || c == '?'
+				|| c == '|' || c == '&' || c == ';' || c == '/' || c == '.' 
+				|| c == '$' || Character.isWhitespace(c)) {
+				sb.append('\\');
+			}
+			sb.append(c);
+		}
+		return sb.toString();
+	}
+什么是转义：
+	https://baike.baidu.com/item/%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/86397?fr=aladdin
+	所有转义都是指ascii，还是各个语言转义都有其规范？
+		语法一般都是ascii
+		url有其规范
+		...
+!待定
+	通过filter实现指定类型请求的字符串过滤。
+	可以考虑使用装饰者模式
+	
+	优略势：
+		可以避免重复工作，一次性修改所有指定请求。
+		增加了一定的黑盒性。
